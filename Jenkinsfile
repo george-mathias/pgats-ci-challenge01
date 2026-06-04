@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    tools { nodejs 'Node24' } 
+    tools { nodejs 'Node24' } // Nome correto validado por você!
 
     stages {
         stage('Preparar Código') {
@@ -19,7 +19,9 @@ pipeline {
 
         stage('Executar Testes (Apenas Chrome)') {
             steps {
-                sh 'yarn run e2e --project=chromium --heading=false'
+                // HEADLESS=true força o Playwright a rodar em modo texto sem abrir janela gráfica
+                // --project=chromium limita a execução apenas no Chrome
+                sh 'HEADLESS=true yarn run e2e --project=chromium'
             }
         }
     }
