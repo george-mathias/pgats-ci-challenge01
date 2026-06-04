@@ -21,8 +21,8 @@ pipeline {
         stage('Instalar Playwright') {
             steps {
                 nodejs('Node24') {
-                    // Força o instalador do Playwright a ignorar a troca interativa de usuário 'su'
-                    sh 'npx playwright install --with-deps'
+                    // Instala apenas os binários dos navegadores sem tentar modificar o sistema operacional
+                    sh 'yarn playwright install'
                 }
             }
         }
@@ -30,6 +30,7 @@ pipeline {
         stage('Executar Testes E2E') {
             steps {
                 nodejs('Node24') {
+                    // Executa a sua suite de testes
                     sh 'yarn run e2e'
                 }
             }
