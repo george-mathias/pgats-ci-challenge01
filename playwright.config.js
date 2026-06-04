@@ -31,7 +31,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     headless: true,
-    channel: 'chrome'
+    channel: 'chromium-headless-shell'
   },
 
   /* Configure projects for major browsers */
