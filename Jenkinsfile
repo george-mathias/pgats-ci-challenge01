@@ -21,7 +21,7 @@ pipeline {
         stage('Instalar Navegadores') {
             steps {
                 nodejs('Node24') {
-                    // Instala apenas o Chromium leve, ignorando dependências do sistema operacional
+                    // Instala apenas o binário básico do Chromium para rodar em containers
                     sh 'npx playwright install chromium'
                 }
             }
@@ -30,9 +30,8 @@ pipeline {
         stage('Executar Testes E2E') {
             steps {
                 nodejs('Node24') {
-                    // Força o Playwright a usar o motor headless leve que não pede bibliotecas gráficas
-                    env.PLAYWRIGHT_CHROMIUM_FOR_E2E = "true"
-                    sh 'npx playwright test'
+                    // Executa o Playwright apontando explicitamente para o arquivo de configuração do Jenkins do seu projeto
+                    sh 'npx playwright test --config=playwright.jenkins.cjs'
                 }
             }
         }

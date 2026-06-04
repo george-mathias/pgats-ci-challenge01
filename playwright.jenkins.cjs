@@ -6,6 +6,7 @@ module.exports = {
   use: {
     ...baseConfig.use,
     headless: true,
+    channel: 'chromium-headless-shell',
     launchOptions: {
       args: [
         '--no-sandbox', 
