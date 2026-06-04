@@ -1,19 +1,14 @@
 // playwright.jenkins.cjs
 const baseConfig = require('./playwright.config.js');
 
+// Edite o arquivo playwright.jenkins.cjs no seu repositório Git
 module.exports = {
-  ...baseConfig,
+  // ... mantenha as suas outras configurações de projetos (projects) e diretórios intactas
   use: {
-    ...baseConfig.use,
-    headless: true,
-    channel: 'chromium-headless-shell',
+    headless: true,              // Obrigatório para rodar em servidores CI
+    channel: 'chrome',           // 👈 ALTERE OU ADICIONE ESTA LINHA EXATAMENTE AQUI
     launchOptions: {
-      args: [
-        '--no-sandbox', 
-        '--disable-setuid-sandbox', 
-        '--disable-gl-drawing-for-tests',
-        '--disable-gpu'
-      ]
+      args: ['--no-sandbox', '--disable-setuid-sandbox'] // Garante a execução segura dentro de containers Docker
     }
-  }
+  },
 };
