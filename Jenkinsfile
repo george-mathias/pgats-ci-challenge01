@@ -2,36 +2,17 @@ pipeline {
     agent any
 
     stages {
-        stage('Instalar Node e Yarn') {
+        stage('Construir Imagem de Testes') {
             steps {
-                nodejs('Node24') {
-                    sh 'npm install -g yarn'
-                }
-            }
-        }
-
-        stage('Instalar Dependencias') {
-            steps {
-                nodejs('Node24') {
-                    sh 'yarn install'
-                }
-            }
-        }
-
-        stage('Instalar Navegadores') {
-            steps {
-                nodejs('Node24') {
-                    sh 'yarn playwright install chromium'
-                }
+                // Constrói a imagem localmente no Docker Desktop usando o Dockerfile do projeto
+                sh 'docker build -t meu-projeto-tests .'
             }
         }
 
         stage('Executar Testes E2E') {
             steps {
-                nodejs('Node24') {
-                    // Executa exatamente o mesmo comando do seu GitHub Actions original
-                    sh 'yarn run e2e'
-                }
+                // Roda o container isolado. O resultado do teste volta direto para o Jenkins.
+                sh 'docker run --rm meu-projeto-tests'
             }
         }
     }
