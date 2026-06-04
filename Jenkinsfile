@@ -1,26 +1,20 @@
 pipeline {
-    agent any
-    tools { nodejs 'Node24' } 
+    // O Jenkins vai baixar a imagem oficial da Microsoft com tudo pronto
+    agent {
+        docker { 
+            image '://microsoft.com' 
+        }
+    }
 
     stages {
-        stage('Preparar Código') {
+        stage('Executar Testes E2E') {
             steps {
                 checkout scm
-            }
-        }
-
-        stage('Instalar Dependências') {
-            steps {
+                
+                // Comandos limpos, sem precisar baixar o Chrome ou dependências
                 sh 'npm install -g yarn'
                 sh 'yarn install'
-                sh 'yarn playwright install chromium'
-            }
-        }
-
-        stage('Executar Testes (Apenas Chrome)') {
-            steps {
-                // Atualizado para ler o arquivo .cjs
-                sh 'yarn run e2e --project=chromium --config=playwright.jenkins.cjs'
+                sh 'yarn run e2e --project=chromium'
             }
         }
     }
