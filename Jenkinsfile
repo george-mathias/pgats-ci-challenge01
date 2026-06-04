@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('Instalar Node e Yarn') {
             steps {
-                // Ajustado com 'N' maiúsculo para bater com a sua imagem
                 nodejs('Node24') {
                     sh 'npm install -g yarn'
                 }
@@ -22,8 +21,8 @@ pipeline {
         stage('Instalar Playwright') {
             steps {
                 nodejs('Node24') {
-                    // O --with-deps instala os pacotes do Linux necessários dentro do Docker
-                    sh 'yarn playwright install --with-deps'
+                    // Força o instalador do Playwright a ignorar a troca interativa de usuário 'su'
+                    sh 'npx playwright install --with-deps'
                 }
             }
         }
