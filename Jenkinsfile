@@ -1,31 +1,55 @@
 pipeline {
-    agent any
-    tools { nodejs 'Node24' } 
+    agent {
+        label 'ubuntu-latest' // Define o nó ou label do slave Jenkins aplicável
+    }
+    
+    triggers {
+        // O workflow_dispatch equivale à execução manual no Jenkins (Build Now)
+        // Deixar este bloco vazio remove gatilhos automáticos de agendamento ou SCM
+    }
 
     stages {
-        stage('Preparar Código') {
+        stage('Checkout Project') {
             steps {
+                // Realiza o checkout do repositório configurado no job
                 checkout scm
             }
         }
 
-        stage('Instalar Dependências') {
+        stage('Install NodeJS & Yarn') {
             steps {
-                sh 'npm install -g yarn'
-                sh 'yarn install'
-                sh 'yarn playwright install chromium'
+                // Certifique-se de ter o NodeJS pré-configurado nas ferramentas globais do Jenkins com o nome 'node24'
+                nodejs('node24') {
+                    // Instala o Yarn globalmente utilizando o npm do node instalado
+                    sh 'npm install -g yarn'
+                }
             }
         }
 
-        stage('Executar Testes (Apenas Chrome)') {
+        stage('Installing Dependencies') {
             steps {
-                // Injeta um script inline no Node para interceptar o Playwright antes de abrir o Chrome,
-                // forçando as flags necessárias sem alterar o seu config do projeto.
-                sh 'NODE_OPTIONS="-r (module.exports = require(\'child_process\').execSync)" yarn run e2e --project=chromium || yarn run e2e --project=chromium'
-                
-                // Caso o comando acima seja muito complexo para o interpretador do Jenkins,
-                // use esta alternativa limpa que usa o bypass do Chromium nativo no Linux:
-                // sh 'CHROMIUM_FLAGS="--no-sandbox --disable-setuid-sandbox --disable-gl-drawing-for-tests" yarn run e2e --project=chromium'
+                nodejs('node24') {
+                    // Executa a instalação das dependências do projeto via Yarn
+                    sh 'yarn'
+                }
+            }
+        }
+
+        stage('Installing Playwright Browsers') {
+            steps {
+                nodejs('node24') {
+                    // Instala os navegadores necessários para o Playwright
+                    sh 'yarn playwright install'
+                }
+            }
+        }
+
+        stage('Running E2E Tests') {
+            steps {
+                nodejs('node24') {
+                    // Executa os testes de ponta a ponta
+                    sh 'yarn run e2e'
+                }
             }
         }
     }
