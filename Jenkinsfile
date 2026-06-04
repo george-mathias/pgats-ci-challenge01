@@ -18,21 +18,17 @@ pipeline {
             }
         }
 
-        stage('Instalar Playwright') {
+        stage('Executar Testes E2E (No Container Playwright)') {
             steps {
-                nodejs('Node24') {
-                    // Instala apenas os binários dos navegadores sem tentar modificar o sistema operacional
-                    sh 'yarn playwright install'
-                }
-            }
-        }
-
-        stage('Executar Testes E2E') {
-            steps {
-                nodejs('Node24') {
-                    // Executa a sua suite de testes
-                    sh 'yarn run e2e'
-                }
+                // Executa os testes isolados num container oficial do Playwright que já tem os navegadores e dependências visuais configurados
+                sh '''
+                    docker run --rm \
+                    -v /var/run/docker.sock:/var/run/docker.sock \
+                    -v ${WORKSPACE}:/work \
+                    -w /work \
+                    ://microsoft.com \
+                    /bin/bash -c "yarn install && npx playwright test"
+                '''
             }
         }
     }
