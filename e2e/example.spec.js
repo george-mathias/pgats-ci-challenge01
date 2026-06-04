@@ -11,7 +11,7 @@ test.describe(`user rides`, async () => {
     await page.getByLabel('Amount of people').selectOption('2');
     await page.getByRole('button', { name: 'Next' }).click();
 
-    await expect(page.url()).toContain(`success`);
+    await expect(page).toHaveURL(/.*success/)
   });
 
   test('user above height should not be allowed', async ({ page }) => {
