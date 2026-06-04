@@ -1,42 +1,46 @@
 pipeline {
-    agent any // Remove a restrição e roda em qualquer máquina configurada no Jenkins
+    agent {
+        docker {
+            // Imagem oficial do Playwright com Node.js 24 integrado
+            image '://microsoft.com'
+            // Mantém o container rodando como usuário root para evitar problemas de permissão de escrita
+            args '-u root'
+        }
+    }
 
     stages {
         stage('Checkout Project') {
             steps {
-                checkout scm
+                // O Jenkins já faz o checkout automático ao iniciar o pipeline declarativo
+                echo 'Projeto extraído com sucesso.'
             }
         }
 
-        stage('Install NodeJS & Yarn') {
+        stage('Install Yarn') {
             steps {
-                nodejs('node24') {
-                    sh 'npm install -g yarn'
-                }
+                // Instala o yarn globalmente dentro do container Linux
+                sh 'npm install -g yarn'
             }
         }
 
         stage('Installing Dependencies') {
             steps {
-                nodejs('node24') {
-                    sh 'yarn'
-                }
+                // Instala as dependências do seu projeto
+                sh 'yarn install'
             }
         }
 
         stage('Installing Playwright Browsers') {
             steps {
-                nodejs('node24') {
-                    sh 'yarn playwright install'
-                }
+                // Baixa os binários dos navegadores compatíveis com a imagem
+                sh 'yarn playwright install'
             }
         }
 
         stage('Running E2E Tests') {
             steps {
-                nodejs('node24') {
-                    sh 'yarn run e2e'
-                }
+                // Executa a sua suite de testes ponta a ponta
+                sh 'yarn run e2e'
             }
         }
     }
