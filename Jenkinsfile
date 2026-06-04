@@ -1,21 +1,16 @@
 pipeline {
-    agent {
-        label 'ubuntu-latest' // Define o nó ou label do slave Jenkins aplicável
-    }
+    agent any // Remove a restrição e roda em qualquer máquina configurada no Jenkins
 
     stages {
         stage('Checkout Project') {
             steps {
-                // Realiza o checkout do repositório configurado no job
                 checkout scm
             }
         }
 
         stage('Install NodeJS & Yarn') {
             steps {
-                // Certifique-se de ter o NodeJS pré-configurado nas ferramentas globais do Jenkins com o nome 'node24'
                 nodejs('node24') {
-                    // Instala o Yarn globalmente utilizando o npm do node instalado
                     sh 'npm install -g yarn'
                 }
             }
@@ -24,7 +19,6 @@ pipeline {
         stage('Installing Dependencies') {
             steps {
                 nodejs('node24') {
-                    // Executa a instalação das dependências do projeto via Yarn
                     sh 'yarn'
                 }
             }
@@ -33,7 +27,6 @@ pipeline {
         stage('Installing Playwright Browsers') {
             steps {
                 nodejs('node24') {
-                    // Instala os navegadores necessários para o Playwright
                     sh 'yarn playwright install'
                 }
             }
@@ -42,7 +35,6 @@ pipeline {
         stage('Running E2E Tests') {
             steps {
                 nodejs('node24') {
-                    // Executa os testes de ponta a ponta
                     sh 'yarn run e2e'
                 }
             }
