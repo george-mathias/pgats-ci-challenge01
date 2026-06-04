@@ -4,8 +4,8 @@ pipeline {
     stages {
         stage('Instalar Node e Yarn') {
             steps {
-                // O Jenkins baixa e ativa o Node automaticamente aqui
-                nodejs('node24') {
+                // Ajustado com 'N' maiúsculo para bater com a sua imagem
+                nodejs('Node24') {
                     sh 'npm install -g yarn'
                 }
             }
@@ -13,7 +13,7 @@ pipeline {
 
         stage('Instalar Dependencias') {
             steps {
-                nodejs('node24') {
+                nodejs('Node24') {
                     sh 'yarn install'
                 }
             }
@@ -21,8 +21,8 @@ pipeline {
 
         stage('Instalar Playwright') {
             steps {
-                nodejs('node24') {
-                    // O comando abaixo instala os navegadores E as dependências do Ubuntu de uma vez só
+                nodejs('Node24') {
+                    // O --with-deps instala os pacotes do Linux necessários dentro do Docker
                     sh 'yarn playwright install --with-deps'
                 }
             }
@@ -30,7 +30,7 @@ pipeline {
 
         stage('Executar Testes E2E') {
             steps {
-                nodejs('node24') {
+                nodejs('Node24') {
                     sh 'yarn run e2e'
                 }
             }
