@@ -1,4 +1,4 @@
-// playwright.jenkins.js
+// playwright.jenkins.cjs
 const baseConfig = require('./playwright.config.js');
 
 module.exports = {
@@ -7,7 +7,12 @@ module.exports = {
     ...baseConfig.use,
     headless: true,
     launchOptions: {
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gl-drawing-for-tests']
+      args: [
+        '--no-sandbox', 
+        '--disable-setuid-sandbox', 
+        '--disable-gl-drawing-for-tests',
+        '--disable-gpu'
+      ]
     }
   }
 };

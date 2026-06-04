@@ -19,8 +19,8 @@ pipeline {
 
         stage('Executar Testes (Apenas Chrome)') {
             steps {
-                // Força o uso da configuração isolada para ambiente de CI
-                sh 'yarn run e2e --project=chromium --config=playwright.jenkins.js'
+                // Atualizado para ler o arquivo .cjs
+                sh 'yarn run e2e --project=chromium --config=playwright.jenkins.cjs'
             }
         }
     }
