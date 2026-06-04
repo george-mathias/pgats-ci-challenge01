@@ -21,8 +21,7 @@ pipeline {
         stage('Instalar Navegadores') {
             steps {
                 nodejs('Node24') {
-                    // Instala apenas o binário básico do Chromium para rodar em containers
-                    sh 'npx playwright install chromium'
+                    sh 'yarn playwright install chromium'
                 }
             }
         }
@@ -30,8 +29,8 @@ pipeline {
         stage('Executar Testes E2E') {
             steps {
                 nodejs('Node24') {
-                    // Executa o Playwright apontando explicitamente para o arquivo de configuração do Jenkins do seu projeto
-                    sh 'npx playwright test --config=playwright.jenkins.cjs'
+                    // Executa exatamente o mesmo comando do seu GitHub Actions original
+                    sh 'yarn run e2e'
                 }
             }
         }
