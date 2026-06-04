@@ -1,0 +1,27 @@
+name: execução manual
+on: workflow_dispatch
+jobs: # tarefas que serão executadas
+    e2e_tests: # nome da task
+        runs-on: ubuntu-latest # imagem que será utilizada
+        steps: # passos que serão executadas na task
+            - name: checkout project
+              uses: actions/checkout@v4
+
+            - name: install nodejs
+              uses: actions/setup-node@v4
+              with: 
+                node-version: 24.x
+
+            - name: install yarn
+              run: npm install -g yarn
+
+            - name: installing dependencies
+              run: yarn
+
+            - name: installing playwright browsers
+              run: yarn playwright install
+
+            - name: runing e2e tests
+              run: yarn run e2e
+            
+             
