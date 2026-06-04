@@ -11,8 +11,8 @@ pipeline {
 
         stage('Executar Testes E2E') {
             steps {
-                // Roda o container isolado. O resultado do teste volta direto para o Jenkins.
-                sh 'docker run --rm meu-projeto-tests'
+                // Adicionadas as flags --ipc=host e --init para dar estabilidade ao Chromium no Jenkins
+                sh 'docker run --rm --ipc=host --init meu-projeto-tests'
             }
         }
     }
