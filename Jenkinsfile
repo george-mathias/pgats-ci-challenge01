@@ -1,46 +1,38 @@
 pipeline {
-    agent {
-        docker {
-            // Imagem oficial do Playwright com Node.js 24 integrado
-            image '://microsoft.com'
-            // Mantém o container rodando como usuário root para evitar problemas de permissão de escrita
-            args '-u root'
-        }
-    }
+    agent any
 
     stages {
-        stage('Checkout Project') {
+        stage('Instalar Node e Yarn') {
             steps {
-                // O Jenkins já faz o checkout automático ao iniciar o pipeline declarativo
-                echo 'Projeto extraído com sucesso.'
+                // O Jenkins baixa e ativa o Node automaticamente aqui
+                nodejs('node24') {
+                    sh 'npm install -g yarn'
+                }
             }
         }
 
-        stage('Install Yarn') {
+        stage('Instalar Dependencias') {
             steps {
-                // Instala o yarn globalmente dentro do container Linux
-                sh 'npm install -g yarn'
+                nodejs('node24') {
+                    sh 'yarn install'
+                }
             }
         }
 
-        stage('Installing Dependencies') {
+        stage('Instalar Playwright') {
             steps {
-                // Instala as dependências do seu projeto
-                sh 'yarn install'
+                nodejs('node24') {
+                    // O comando abaixo instala os navegadores E as dependências do Ubuntu de uma vez só
+                    sh 'yarn playwright install --with-deps'
+                }
             }
         }
 
-        stage('Installing Playwright Browsers') {
+        stage('Executar Testes E2E') {
             steps {
-                // Baixa os binários dos navegadores compatíveis com a imagem
-                sh 'yarn playwright install'
-            }
-        }
-
-        stage('Running E2E Tests') {
-            steps {
-                // Executa a sua suite de testes ponta a ponta
-                sh 'yarn run e2e'
+                nodejs('node24') {
+                    sh 'yarn run e2e'
+                }
             }
         }
     }
