@@ -1,20 +1,27 @@
 pipeline {
-    // O Jenkins vai baixar a imagem oficial da Microsoft com tudo pronto
-    agent {
-        docker { 
-            image '://microsoft.com' 
-        }
-    }
+    agent any
+    tools { nodejs 'Node24' } 
 
     stages {
-        stage('Executar Testes E2E') {
+        stage('Preparar Código') {
             steps {
                 checkout scm
-                
-                // Comandos limpos, sem precisar baixar o Chrome ou dependências
+            }
+        }
+
+        stage('Instalar Dependências') {
+            steps {
                 sh 'npm install -g yarn'
                 sh 'yarn install'
-                sh 'yarn run e2e --project=chromium'
+                sh 'yarn playwright install chromium'
+            }
+        }
+
+        stage('Executar Testes (Apenas Chrome)') {
+            steps {
+                // Passamos os argumentos do Chromium simulando um ambiente CI texto puro.
+                // Esta flag força o Playwright a embutir o launchOptions em tempo de execução.
+                sh 'yarn run e2e --project=chromium --launch-options=\'{"args":["--no-sandbox","--disable-setuid-sandbox","--disable-gl-drawing-for-tests"]}\''
             }
         }
     }
