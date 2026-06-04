@@ -1,27 +1,23 @@
 pipeline {
     agent any
-    tools { nodejs 'Node24' } // Nome correto validado por você!
+    tools { nodejs 'Node24' } 
 
     stages {
-        stage('Preparar Código') {
+        stage('Preparar e Instalar') {
             steps {
                 checkout scm
-            }
-        }
-
-        stage('Instalar Dependências') {
-            steps {
                 sh 'npm install -g yarn'
                 sh 'yarn install'
-                sh 'yarn playwright install chromium'
+                
+                // Baixa o Chrome e instala todas as dependências do Linux automaticamente
+                sh 'yarn playwright install chromium --with-deps'
             }
         }
 
         stage('Executar Testes (Apenas Chrome)') {
             steps {
-                // HEADLESS=true força o Playwright a rodar em modo texto sem abrir janela gráfica
-                // --project=chromium limita a execução apenas no Chrome
-                sh 'HEADLESS=true yarn run e2e --project=chromium'
+                // Roda puramente direto e sem flags complicadas
+                sh 'yarn run e2e --project=chromium'
             }
         }
     }
