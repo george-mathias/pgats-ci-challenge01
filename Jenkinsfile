@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    tools { nodejs 'Node 24' } 
+    tools { nodejs 'Node24' } 
 
     stages {
         stage('Preparar Código') {
