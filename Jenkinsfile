@@ -18,17 +18,22 @@ pipeline {
             }
         }
 
-        stage('Executar Testes E2E (No Container Playwright)') {
+        stage('Instalar Navegadores') {
             steps {
-                // Executa os testes isolados num container oficial do Playwright que já tem os navegadores e dependências visuais configurados
-                sh '''
-                    docker run --rm \
-                    -v /var/run/docker.sock:/var/run/docker.sock \
-                    -v ${WORKSPACE}:/work \
-                    -w /work \
-                    ://microsoft.com \
-                    /bin/bash -c "yarn install && npx playwright test"
-                '''
+                nodejs('Node24') {
+                    // Instala apenas o Chromium leve, ignorando dependências do sistema operacional
+                    sh 'npx playwright install chromium'
+                }
+            }
+        }
+
+        stage('Executar Testes E2E') {
+            steps {
+                nodejs('Node24') {
+                    // Força o Playwright a usar o motor headless leve que não pede bibliotecas gráficas
+                    env.PLAYWRIGHT_CHROMIUM_FOR_E2E = "true"
+                    sh 'npx playwright test'
+                }
             }
         }
     }
