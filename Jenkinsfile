@@ -2,11 +2,6 @@ pipeline {
     agent {
         label 'ubuntu-latest' // Define o nó ou label do slave Jenkins aplicável
     }
-    
-    triggers {
-        // O workflow_dispatch equivale à execução manual no Jenkins (Build Now)
-        // Deixar este bloco vazio remove gatilhos automáticos de agendamento ou SCM
-    }
 
     stages {
         stage('Checkout Project') {
